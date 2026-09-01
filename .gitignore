@@ -1,0 +1,55 @@
+# Logs
+logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+node_modules
+dist
+dist-ssr
+*.local
+
+# Editor directories and files
+.vscode/*
+!.vscode/extensions.json
+.idea
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# ------------------------------------------------------------------
+# Alena's design-work originals staged at the repo root — the website
+# only uses the optimised copies inside /public, so none of these get
+# uploaded to GitHub. They are safe to keep here on disk.
+# ------------------------------------------------------------------
+/Car 1D Project/
+/crochet photos/
+/Cura/
+/Cura App Design/
+/dreaming or reality/
+/DSUTD/
+/DTI - SUTD Cleans/
+/DTP Block Box/
+/Fee Fi Fumigation/
+/Loreal Brandstorm/
+/New folder*/
+/Parachute 2D Project/
+/PlateFull/
+/ROOT shirt design/
+/Spatial Design/
+/University Leaders Dialogue/
+/Water Bending/
+/What the Hack/
+/youth tech SG/
+# loose images & html drafts at the root (site copies live in /public)
+/*.png
+/*.jpg
+/*.jpeg
+/cashi.html
+desktop.ini

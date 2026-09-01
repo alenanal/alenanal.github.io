@@ -1,0 +1,47 @@
+:root {
+  --ink: #04040c;
+  --hud: #ffb054;
+  --hud-bright: #ffd9a8;
+  --hud-dim: rgba(255, 176, 84, 0.55);
+  --line: rgba(255, 176, 84, 0.28);
+  --panel-bg: rgba(9, 11, 24, 0.97);
+  --text: #e9e5da;
+  --text-dim: #a8a294;
+  --cyan: #7de3f0;
+
+  --display: 'Orbitron', 'Arial Black', sans-serif;
+  --mono: 'Space Mono', Consolas, monospace;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+  overflow: hidden;
+}
+
+body {
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--mono);
+  -webkit-font-smoothing: antialiased;
+}
+
+::selection {
+  background: var(--hud);
+  color: var(--ink);
+}
+
+button {
+  font-family: inherit;
+  background: none;
+  border: none;
+  color: inherit;
+  cursor: pointer;
+}
