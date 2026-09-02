@@ -7,7 +7,7 @@
 export const profile = {
   name: 'ALENA',
   callsign: 'PORTFOLIO ONE', // your "mission name", shows in the HUD
-  tagline: 'Design & AI @ SUTD · ambitious is an understatement',
+  tagline: 'Major in Design & AI · Minor in Psychology and Business Management · Minor in Computer Science',
   // Put a photo of yourself named me.jpg inside the /public folder
   // and it will appear automatically in the Sun panel.
   photo: '/me.jpg',

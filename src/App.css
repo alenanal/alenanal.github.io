@@ -10,6 +10,36 @@
   cursor: grabbing;
 }
 
+/* link to the no-spaceship version, for visitors in a hurry */
+.quick-version-link {
+  position: fixed;
+  bottom: 18px;
+  right: 22px;
+  z-index: 31;
+  font-size: 11.5px;
+  letter-spacing: 0.14em;
+  color: var(--hud-bright);
+  text-decoration: none;
+  border: 1px solid var(--hud);
+  padding: 10px 16px;
+  border-radius: 6px;
+  background: rgba(255, 176, 84, 0.1);
+  backdrop-filter: blur(4px);
+  box-shadow: 0 0 16px rgba(255, 176, 84, 0.35);
+  text-shadow: 0 0 8px rgba(255, 200, 130, 0.7);
+  animation: quick-link-glow 2.4s ease-in-out infinite alternate;
+  transition: all 0.25s;
+}
+@keyframes quick-link-glow {
+  from { box-shadow: 0 0 12px rgba(255, 176, 84, 0.3); }
+  to { box-shadow: 0 0 26px rgba(255, 176, 84, 0.6); }
+}
+.quick-version-link:hover {
+  background: var(--hud);
+  color: var(--ink);
+  text-shadow: none;
+}
+
 /* ============================================== minimal title card */
 .title-card {
   position: fixed;

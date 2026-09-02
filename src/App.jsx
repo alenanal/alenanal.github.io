@@ -121,6 +121,11 @@ export default function App() {
       </Canvas>
 
       {phase === 'ground' && <TitleCard />}
+      {phase === 'ground' && (
+        <a className="quick-version-link" href="/basic.html">
+          in a hurry? read the quick version →
+        </a>
+      )}
       {phase === 'ground' && <SkyPicker mode={skyMode} onChange={setSkyMode} />}
       {(phase === 'arrive' || lanternFlash) && <WarpFlash />}
       {phase === 'flying' && showGuide && <FlightGuide onDismiss={() => setShowGuide(false)} />}
