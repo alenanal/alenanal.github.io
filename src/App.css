@@ -777,7 +777,7 @@
 }
 .video-label {
   margin-top: 6px;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.2em;
   text-transform: uppercase;
   color: var(--cyan);
@@ -785,7 +785,7 @@
 }
 .video-credit {
   margin-top: 8px;
-  font-size: 10px;
+  font-size: 11px;
   font-style: italic;
   letter-spacing: 0.04em;
   color: var(--text-dim);
@@ -825,7 +825,7 @@
 }
 .mockup-caption {
   max-width: 420px;
-  font-size: 10px;
+  font-size: 11px;
   line-height: 1.7;
   letter-spacing: 0.04em;
   text-align: center;
@@ -1001,7 +1001,8 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
+  justify-content: flex-start;
+  overflow: hidden; /* the overlay never scrolls — only page content does */
   animation: fade-in 0.5s ease;
 }
 /* living space outside the book: two drifting star layers, a soft
@@ -1090,21 +1091,23 @@
 
 .db-book-wrap {
   position: relative;
-  /* exactly 2 × the max page width, so the spread always splits the
-     container cleanly and the two pages meet flush at the spine */
-  width: min(94vw, 1040px);
-  flex: 1;
-  min-height: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: 30px 0 8px;
+  /* the book + arrows always fit the window together: width is capped by
+     the window height (spread height = 0.686 × width, ~235px reserved
+     for the arrows & help). Long page CONTENT scrolls inside the pages —
+     the overlay itself never scrolls. Always a two-page spread. */
+  width: min(94vw, 1040px, calc((100vh - 235px) / 0.686));
+  /* page-flip enforces a 560px minimum spread — the wrap must never be
+     narrower than the book, or edge-anchored pills land ON the pages */
+  min-width: min(560px, 94vw);
+  flex: 0 0 auto;
+  margin-top: auto; /* pairs with .db-help's margin-bottom to centre the group */
+  padding: 34px 0 6px;
   filter: drop-shadow(0 30px 60px rgba(0, 0, 0, 0.7));
 }
 .db-book {
   position: relative;
   width: 100%;
-  height: 100%;
+  height: auto;
 }
 /* page-flip ships no stylesheet — these are the positioning rules its
    HTML mode expects (block fills the aspect-sized wrapper) */
@@ -1152,13 +1155,24 @@
   padding: 22px 22px 30px;
   display: flex;
   flex-direction: column;
-  overflow: hidden;
+  /* long pages scroll inside the book instead of clipping */
+  overflow-y: auto;
+  overflow-x: hidden;
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 186, 100, 0.35) transparent;
+}
+.db-page-inner::-webkit-scrollbar {
+  width: 5px;
+}
+.db-page-inner::-webkit-scrollbar-thumb {
+  background: rgba(255, 186, 100, 0.35);
+  border-radius: 3px;
 }
 .db-page-num {
   position: absolute;
   bottom: 8px;
   right: 14px;
-  font-size: 9px;
+  font-size: 10px;
   letter-spacing: 0.2em;
   color: rgba(255, 214, 140, 0.5);
 }
@@ -1190,7 +1204,7 @@
   animation: db-twinkle 2.2s ease-in-out infinite alternate;
 }
 .db-cover-sub {
-  font-size: 11px;
+  font-size: 12.5px;
   letter-spacing: 0.3em;
   text-transform: lowercase;
   color: var(--text-dim);
@@ -1248,7 +1262,7 @@
   align-items: baseline;
   text-align: left;
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 12px;
   letter-spacing: 0.04em;
   color: #d9d2c2;
   padding: 3.5px 4px;
@@ -1270,24 +1284,24 @@
   margin-bottom: 8px;
 }
 .db-kicker {
-  font-size: 8.5px;
+  font-size: 10px;
   letter-spacing: 0.3em;
   text-transform: uppercase;
   color: var(--cyan);
   margin-bottom: 4px;
 }
 .db-project .db-title {
-  font-size: 16.5px;
+  font-size: 18px;
   line-height: 1.3;
 }
 .db-cont {
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.2em;
   color: var(--text-dim);
 }
 .db-text {
   font-family: var(--mono);
-  font-size: 10.5px;
+  font-size: 12px;
   line-height: 1.65;
   letter-spacing: 0.02em;
   color: #ddd6c6;
@@ -1302,7 +1316,7 @@
 .db-link {
   align-self: flex-start;
   margin-top: 8px;
-  font-size: 10px;
+  font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--hud);
   border: 1px solid var(--line);
@@ -1318,7 +1332,8 @@
 /* image grids — always stretch to fill the rest of the page */
 .db-grid {
   flex: 1;
-  min-height: 0;
+  /* never collapse — if the page is crowded it scrolls instead */
+  min-height: 170px;
   display: grid;
   grid-template-columns: repeat(var(--cols, 2), 1fr);
   grid-auto-rows: 1fr;
@@ -1345,7 +1360,7 @@
 .db-hero {
   width: 100%;
   flex: 1;
-  min-height: 0;
+  min-height: 200px;
   object-fit: contain;
   border: 1px solid rgba(255, 186, 100, 0.3);
   border-radius: 4px;
@@ -1390,7 +1405,7 @@
 }
 .db-videofig figcaption {
   margin-top: 4px;
-  font-size: 9px;
+  font-size: 10.5px;
   letter-spacing: 0.22em;
   text-transform: uppercase;
   color: var(--cyan);
@@ -1549,7 +1564,7 @@
   margin-left: 6px;
   flex: 1;
   font-style: normal;
-  font-size: 8.5px;
+  font-size: 10px;
   letter-spacing: 0.14em;
   color: var(--text-dim);
   background: rgba(255, 255, 255, 0.05);
@@ -1561,7 +1576,7 @@
   text-overflow: ellipsis;
 }
 .db-preview-bar a {
-  font-size: 9px;
+  font-size: 10.5px;
   letter-spacing: 0.1em;
   color: var(--hud);
   text-decoration: none;
@@ -1603,7 +1618,7 @@
   opacity: 1;
 }
 .db-caption {
-  font-size: 9.5px;
+  font-size: 11px;
   line-height: 1.6;
   letter-spacing: 0.04em;
   text-align: center;
@@ -1641,7 +1656,7 @@
   z-index: 65;
 }
 .db-nav span {
-  font-size: 10px;
+  font-size: 11.5px;
   letter-spacing: 0.25em;
   color: var(--text-dim);
 }
@@ -1660,11 +1675,81 @@
 }
 .db-help {
   margin: 8px 0 14px;
-  font-size: 9px;
+  margin-bottom: auto;
+  padding-bottom: 14px;
+  font-size: 10.5px;
   letter-spacing: 0.22em;
   color: rgba(158, 165, 185, 0.55);
   text-align: center;
   z-index: 65;
+}
+
+/* floating skill pills — they emerge from the book's spine and drift
+   in the air beside it, one set per open project */
+.db-skill-cloud {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 62;
+}
+/* anchors hug the book's outer edges, so pills always float in the
+   air BESIDE the pages — never over the reader's content */
+.db-skill-anchor {
+  position: absolute;
+  pointer-events: none;
+}
+.db-skill-anchor.is-left {
+  left: -18px;
+  transform: translateX(-100%);
+}
+.db-skill-anchor.is-right {
+  right: -18px;
+  transform: translateX(100%);
+}
+.db-skill-pill {
+  display: inline-block;
+  font-family: var(--mono);
+  font-size: 12px;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+  color: #ffe3bb;
+  background: linear-gradient(160deg, rgba(30, 26, 44, 0.92), rgba(16, 14, 28, 0.92));
+  border: 1px solid rgba(255, 186, 100, 0.55);
+  border-radius: 999px;
+  padding: 8px 16px;
+  box-shadow: 0 0 14px rgba(255, 176, 84, 0.28), 0 6px 18px rgba(0, 0, 0, 0.5);
+  text-shadow: 0 0 8px rgba(255, 200, 130, 0.6);
+  /* the resting state is the default — the emerge animation only
+     decorates the arrival, so a dropped animation can never leave a
+     pill stranded mid-book */
+  opacity: 1;
+  animation:
+    pill-emerge 0.9s cubic-bezier(0.2, 0.8, 0.3, 1.1) var(--delay, 0s) backwards,
+    pill-bob var(--bob, 4s) ease-in-out calc(var(--delay, 0s) + 0.9s) infinite alternate;
+}
+@keyframes pill-emerge {
+  0% {
+    opacity: 0;
+    transform: translate(var(--fx, 30vw), var(--fy, 10vh)) scale(0.2) rotate(-10deg);
+    filter: blur(4px);
+  }
+  55% {
+    opacity: 1;
+    filter: blur(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(0, 0) scale(1) rotate(0deg);
+  }
+}
+@keyframes pill-bob {
+  from { transform: translateY(0) rotate(0deg); }
+  to { transform: translateY(9px) rotate(1.2deg); }
+}
+@media (max-width: 1150px) {
+  .db-skill-cloud {
+    display: none;
+  }
 }
 
 /* page-turn stardust */
@@ -1704,7 +1789,7 @@
   box-shadow: 0 0 60px rgba(0, 0, 0, 0.8);
 }
 .db-lightbox p {
-  font-size: 9px;
+  font-size: 10.5px;
   letter-spacing: 0.25em;
   color: var(--text-dim);
 }

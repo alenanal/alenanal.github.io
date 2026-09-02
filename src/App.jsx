@@ -64,6 +64,9 @@ export default function App() {
     setPhase('ground')
   }
 
+  // dev/test hook: lets automated checks open a section without flying
+  window.__openSection = (id) => setActive(id)
+
   const openSection = (id) => {
     setActive(id)
     setShowGuide(false)

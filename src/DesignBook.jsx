@@ -296,6 +296,7 @@ export default function DesignBook({ onClose }) {
   const [pageNo, setPageNo] = useState(0)
   const total = pages.length
 
+
   // sparkles that burst from the spine on every page turn
   const sparkle = () => {
     const host = wrapRef.current
@@ -341,6 +342,22 @@ export default function DesignBook({ onClose }) {
   const flipBack = () => animated((f) => f.flipPrev())
   const jump = (id) => animated((f) => f.flip(tocMap[id]))
 
+  // the skills of the open spread — each project's pills float on ITS
+  // side of the book: left page's skills on the left, right page's on
+  // the right. A project continuing across both pages splits its pills.
+  const sideSkills = useMemo(() => {
+    const skillsOf = (pg) => (pg?.type === 'proj' ? pg.p.skills || [] : [])
+    const lp = pages[pageNo]
+    const rp = pages[pageNo + 1]
+    if (lp?.type === 'proj' && rp?.type === 'proj' && lp.p.id === rp.p.id) {
+      const all = lp.p.skills || []
+      const half = Math.ceil(all.length / 2)
+      return { left: all.slice(0, half), right: all.slice(half) }
+    }
+    return { left: skillsOf(lp), right: skillsOf(rp) }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [pageNo])
+
   useEffect(() => {
     // Deferred init, for two reasons: (1) StrictMode mounts, unmounts, and
     // remounts effects in dev — creating PageFlip immediately would let the
@@ -350,13 +367,13 @@ export default function DesignBook({ onClose }) {
     // have settled yet — measuring 0 height sizes every page to 0×0
     // forever. So wait until the container has real dimensions.
     let flip = null
-    let raf = 0
+    let timer = 0
     let tries = 0
     const boot = () => {
       const el = bookRef.current
       if (!el) return
-      if (el.getBoundingClientRect().height < 100 && tries++ < 120) {
-        raf = requestAnimationFrame(boot)
+      if (el.getBoundingClientRect().height < 100 && tries++ < 60) {
+        timer = setTimeout(boot, 50) // setTimeout, NOT rAF: it still fires in background tabs
         return
       }
       flip = new PageFlip(el, {
@@ -368,7 +385,7 @@ export default function DesignBook({ onClose }) {
         minHeight: 400,
         maxHeight: 720,
         showCover: true,
-        usePortrait: true,
+        usePortrait: false, // Alena's rule: the book is ALWAYS a two-page spread
         mobileScrollSupport: false,
         maxShadowOpacity: 0.45,
         showPageCorners: true,
@@ -385,7 +402,7 @@ export default function DesignBook({ onClose }) {
       // belt-and-braces: poke the lib's resize listener once settled
       setTimeout(() => window.dispatchEvent(new Event('resize')), 200)
     }
-    raf = requestAnimationFrame(boot)
+    timer = setTimeout(boot, 30)
 
     const onKey = (e) => {
       if (e.key === 'Escape') onClose()
@@ -394,7 +411,7 @@ export default function DesignBook({ onClose }) {
     }
     window.addEventListener('keydown', onKey)
     return () => {
-      cancelAnimationFrame(raf)
+      clearTimeout(timer)
       window.removeEventListener('keydown', onKey)
       try {
         flip?.destroy()
@@ -417,6 +434,31 @@ export default function DesignBook({ onClose }) {
       <button className="db-close" onClick={onClose} aria-label="Close the book">×</button>
 
       <div className="db-book-wrap" ref={wrapRef}>
+        {(sideSkills.left.length > 0 || sideSkills.right.length > 0) && (
+          <div className="db-skill-cloud" key={`skills-${pageNo}`} aria-hidden="true">
+            {['left', 'right'].map((side) =>
+              sideSkills[side].map((s, i) => (
+                <span
+                  className={`db-skill-anchor is-${side}`}
+                  key={`${side}-${s}`}
+                  style={{ top: `${12 + i * 14}%` }}
+                >
+                  <span
+                    className="db-skill-pill"
+                    style={{
+                      '--fx': side === 'left' ? '22vw' : '-22vw',
+                      '--fy': `${12 - i * 5}vh`,
+                      '--delay': `${i * 0.13}s`,
+                      '--bob': `${3.6 + (i % 3) * 0.7}s`,
+                    }}
+                  >
+                    ✦ {s}
+                  </span>
+                </span>
+              )),
+            )}
+          </div>
+        )}
         <div className="db-book" ref={bookRef}>
           {pages.map((page, i) => (
             <div
